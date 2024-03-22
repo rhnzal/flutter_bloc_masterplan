@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_test/pages/user_list_page.dart';
 
 class CubitTest extends Cubit<int> {
   CubitTest({required this.initialValue}) : super(initialValue);
@@ -55,75 +56,77 @@ class BlocTest extends StatelessWidget {
   CubitTest cubitTest = CubitTest(initialValue: 0);
 
     return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('test'),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
+      home: HomePage(cubitTest: cubitTest),
+    );
+  }
+}
 
-            // Gabungan antara BlocListener dan BlocBuilder
-            BlocConsumer<CubitTest, int>(
-              bloc: cubitTest,
-              builder: (context, state) {
-                return Text(state.toString());
-              }, 
-              listener: (context, state) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    duration: Duration(milliseconds: 500),
-                    content: Text('State Changes')
-                  )
-                );
-              }
-            ),
+class HomePage extends StatelessWidget {
+  const HomePage({
+    super.key,
+    required this.cubitTest,
+  });
 
+  final CubitTest cubitTest;
 
-
-            // BlocListener<CubitTest, int>(
-            //   bloc: cubitTest,
-            //   listener: (context, state) {
-            //     ScaffoldMessenger.of(context).showSnackBar(
-            //       const SnackBar(
-            //         content: Text('State Changes')
-            //       )
-            //     );
-            //   },
-            //   child: BlocBuilder<CubitTest, int>(
-            //     bloc: cubitTest,
-            //     builder: (context, state) {
-            //       return Text(state.toString());
-            //     },
-            //   ),
-            // ),
-            
-            // StreamBuilder(
-            //   initialData: cubitTest.initialValue,
-            //   stream: cubitTest.stream, 
-            //   builder: (context, snapshot) {
-            //     return Text(snapshot.data.toString());
-            //   },
-            // ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    cubitTest.remove();
-                  }, 
-                  child: Text('Kurang')
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    cubitTest.add();
-                  }, 
-                  child: Text('Tambah')
-                ),
-              ],
-            )
-          ],
-        ),
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('test'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context, 
+                MaterialPageRoute(
+                  builder: (context) => UserListPage(),
+                )
+              );
+            }, 
+            icon: Icon(Icons.forward)
+          )
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+    
+          // Gabungan antara BlocListener dan BlocBuilder
+          BlocConsumer<CubitTest, int>(
+            bloc: cubitTest,
+            builder: (context, state) {
+              return Text(state.toString());
+            }, 
+            listener: (context, state) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  duration: Duration(milliseconds: 500),
+                  content: Text('State Changes')
+                )
+              );
+            }
+          ),
+    
+    
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  cubitTest.remove();
+                }, 
+                child: Text('Kurang')
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  cubitTest.add();
+                }, 
+                child: Text('Tambah')
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

@@ -6,6 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_bloc_test/models/user.dart';
 import 'package:http/http.dart' as http;
 
+import '../common/widgets/user_list_view.dart';
+
 class UserCubit extends Cubit<List<User>> {
   UserCubit() : super([]);
 
@@ -15,24 +17,33 @@ class UserCubit extends Cubit<List<User>> {
     var response = await http.get(url);
     inspect(response);
 
-    Map<String, dynamic> decodedResponse = json.decode(response.body);
-    log(decodedResponse.toString());
-    print(decodedResponse['data']);
 
     if (response.statusCode == 200) {
+      Map<String, dynamic> decodedResponse = json.decode(response.body);
+      log(decodedResponse.toString());
+      print(decodedResponse['data']);
+
       for (var data in decodedResponse['data']) {
-        List<User> userList = state;
+        List<User> userList = [];
         userList.add(User.fromJson(data));
 
-        emit(userList);
+        emit(List.from(state)..addAll(userList));
       }
 
     }
   }
 
   Future<void> refreshData() async {
-    state.clear();
-    fetchUser();
+    
+    emit([]);
+    await fetchUser();
+  }
+  
+  @override
+  void onChange(Change<List<User>> change) {
+    super.onChange(change);
+
+    inspect(change);
   }
 }
 
@@ -42,47 +53,13 @@ class UserListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserCubit userCubit = UserCubit();
+    var userCubit = context.read<UserCubit>();
 
     return Scaffold(
       appBar: AppBar(
         title: Text('user List'),
       ),
-      body: BlocBuilder<UserCubit, List<User>>(
-        bloc: userCubit,
-        builder: (context, state) {
-          return RefreshIndicator(
-            onRefresh: userCubit.refreshData,
-            child: ListView(
-              children: [
-                for(var user in state) ... [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    padding: EdgeInsets.all(8),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          backgroundImage: NetworkImage(user.avatar),
-                        ),
-                        SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(user.first_name, style: TextStyle(fontSize: 16)),
-                              Text(user.email, style: TextStyle(fontSize: 12, color: Colors.grey),),
-                            ],
-                          )
-                        )
-                      ],
-                    ),
-                  )
-                ]
-              ],
-            ),
-          );
-        },
-      ),
+      body: const UserListView(),
       floatingActionButton: FloatingActionButton(
         onPressed: () => userCubit.fetchUser(),
         child: const Text('Fetch Data'),
@@ -90,3 +67,4 @@ class UserListPage extends StatelessWidget {
     );
   }
 }
+

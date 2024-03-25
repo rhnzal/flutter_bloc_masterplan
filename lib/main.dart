@@ -12,8 +12,6 @@ void main() {
 class BlocTest extends StatelessWidget {
   const BlocTest({super.key});
 
-  
-
   @override
   Widget build(BuildContext context) {
     AppRoute appRoute = AppRoute();

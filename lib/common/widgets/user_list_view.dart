@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../bloc/user_cubit.dart';
 import '../../models/user.dart';
 import '../../pages/user_list_page.dart';
 
@@ -23,20 +24,20 @@ class UserListView extends StatelessWidget {
             children: [
               for(var user in state) ... [
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  padding: EdgeInsets.all(8),
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.all(8),
                   child: Row(
                     children: [
                       CircleAvatar(
                         backgroundImage: NetworkImage(user.avatar),
                       ),
-                      SizedBox(width: 12),
+                      const SizedBox(width: 12),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(user.first_name, style: TextStyle(fontSize: 16)),
-                            Text(user.email, style: TextStyle(fontSize: 12, color: Colors.grey),),
+                            Text(user.first_name, style: const TextStyle(fontSize: 16)),
+                            Text(user.email, style: const TextStyle(fontSize: 12, color: Colors.grey),),
                           ],
                         )
                       )

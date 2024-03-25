@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_test/bloc/status_cubit.dart';
+import 'package:flutter_bloc_test/common/status.dart';
 import 'package:flutter_bloc_test/main.dart';
 import 'package:flutter_bloc_test/pages/not_found_page.dart';
 import 'package:flutter_bloc_test/pages/second_page.dart';
 import 'package:flutter_bloc_test/pages/user_list_page.dart';
 
 import 'bloc/counter_cubit.dart';
+import 'bloc/user_cubit.dart';
 import 'pages/home_page.dart';
 
 class AppRoute {
-  // cubit
+  // cubit instances
   CounterCubit counterCubit = CounterCubit(initialValue: 0);
   UserCubit userCubit = UserCubit();
+  StatusCubit statusCubit = StatusCubit(initialValue: Status.loading);
   
   
   Route onRoute(RouteSettings setting) {
@@ -19,8 +23,16 @@ class AppRoute {
     switch(setting.name) {
       case AppPage.homePage:
         return MaterialPageRoute(
-          builder: (context) => BlocProvider.value(
-            value: counterCubit,
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(
+                value: counterCubit,
+              ),
+
+              BlocProvider.value(
+                value: statusCubit,
+              )
+            ], 
             child: const HomePage()
           )
         );

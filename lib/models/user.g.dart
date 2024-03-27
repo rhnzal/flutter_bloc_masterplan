@@ -21,3 +21,18 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'last_name': instance.last_name,
       'avatar': instance.avatar,
     };
+
+SimpleUser _$SimpleUserFromJson(Map<String, dynamic> json) => SimpleUser(
+      name: json['name'] as String,
+      job: json['job'] as String,
+      id: json['id'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+    );
+
+Map<String, dynamic> _$SimpleUserToJson(SimpleUser instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'job': instance.job,
+      'id': instance.id,
+      'createdAt': instance.createdAt.toIso8601String(),
+    };

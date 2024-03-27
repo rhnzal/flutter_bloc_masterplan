@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_test/bloc/counter_bloc/counter_bloc.dart';
 import 'package:flutter_bloc_test/bloc/counter_cubit.dart';
+import 'package:flutter_bloc_test/bloc/counter_bloc/counter_event.dart';
+import 'package:flutter_bloc_test/bloc/status_bloc/status_bloc.dart';
+import 'package:flutter_bloc_test/bloc/status_bloc/status_event.dart';
 import 'package:flutter_bloc_test/bloc/status_cubit.dart';
 import 'package:flutter_bloc_test/common/status.dart';
 
@@ -14,16 +18,25 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CounterCubit counterCubit = context.read<CounterCubit>();
-    StatusCubit statusCubit = context.read<StatusCubit>();
+    CounterBloc counterBloc = context.read<CounterBloc>();
+    StatusBloc statusBloc = context.read<StatusBloc>();
+
+    // CounterCubit counterCubit = context.read<CounterCubit>();
+    // StatusCubit statusCubit = context.read<StatusCubit>();
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('test'),
         actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pushNamed(context, AppPage.addUserPage);
+            }, 
+            child: Text('Add User')
+          ),
           IconButton(
             onPressed: () {
-              Navigator.pushNamed(context, AppPage.userListpage);
+              Navigator.pushNamed(context, AppPage.userListPage);
             }, 
             icon: const Icon(Icons.forward)
           )
@@ -34,8 +47,8 @@ class HomePage extends StatelessWidget {
         children: [
     
           // Gabungan antara BlocListener dan BlocBuilder
-          BlocConsumer<CounterCubit, int>(
-            bloc: counterCubit,
+          BlocConsumer<CounterBloc, int>(
+            bloc: counterBloc,
             builder: (context, state) {
               return Text(state.toString());
             }, 
@@ -61,13 +74,13 @@ class HomePage extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  counterCubit.remove();
+                  counterBloc.add(CounterDecrementPressed(2));
                 }, 
-                child: const Text('Kurang')
+                child: const Text('Kurang 2')
               ),
               ElevatedButton(
                 onPressed: () {
-                  counterCubit.add();
+                  counterBloc.add(CounterIncrementPressed());
                 }, 
                 child: const Text('Tambah')
               ),
@@ -95,8 +108,8 @@ class HomePage extends StatelessWidget {
               children: [
                 const Text('Status', style: TextStyle(color: Colors.white),),
                 const SizedBox(height: 24),
-                BlocBuilder<StatusCubit, Status>(
-                  bloc: statusCubit,
+                BlocBuilder<StatusBloc, Status>(
+                  bloc: statusBloc,
                   builder: (context, state) {
                     switch(state) {
                       case Status.loading:
@@ -121,17 +134,17 @@ class HomePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ElevatedButton(
-                onPressed: () => statusCubit.updateToLoading(), 
+                onPressed: () => statusBloc.add(LoadingPressed()), 
                 child: Text('loading')
               ),
               
               ElevatedButton(
-                onPressed: () => statusCubit.updateToSuccess(), 
+                onPressed: () => statusBloc.add(SuccessPressed()), 
                 child: Text('Success')
               ),
 
               ElevatedButton(
-                onPressed: () => statusCubit.updateToError(), 
+                onPressed: () => statusBloc.add(ErrorPressed()), 
                 child: Text('Error')
               ),
 

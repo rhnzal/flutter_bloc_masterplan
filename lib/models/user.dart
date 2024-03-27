@@ -22,3 +22,23 @@ class User {
 
   Map<String, dynamic> toJson() => _$UserToJson(this);
 }
+
+
+@JsonSerializable()
+class SimpleUser {
+  final String name;
+  final String job;
+  final String id;
+  final DateTime createdAt;
+
+  SimpleUser({
+    required this.name,
+    required this.job,
+    required this.id,
+    required this.createdAt
+  });
+
+  factory SimpleUser.fromJson(Map<String, dynamic> json) => _$SimpleUserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SimpleUserToJson(this);
+}

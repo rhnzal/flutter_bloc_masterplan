@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_bloc_test/bloc/user_bloc/user_bloc.dart';
+import 'package:flutter_bloc_test/bloc/user_bloc/user_event.dart';
 
 
 import '../bloc/user_cubit.dart';
@@ -10,15 +12,13 @@ class UserListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var userCubit = context.read<UserCubit>();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('user List'),
       ),
       body: const UserListView(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => userCubit.fetchUser(),
+        onPressed: () => context.read<UserBloc>().add(FetchUserData()),
         child: const Text('Fetch Data'),
       ),
     );
